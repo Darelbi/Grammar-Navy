@@ -8,7 +8,7 @@ namespace Priority_Queue
         /// The Priority to insert this node at.
         /// Cannot be manually edited - see queue.Enqueue() and queue.UpdatePriority() instead
         /// </summary>
-        public int Priority { get; protected internal set; }
+        public long Priority { get; protected internal set; }
 
         /// <summary>
         /// Represents the current position in the queue

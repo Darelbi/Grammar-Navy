@@ -18,7 +18,7 @@ namespace Priority_Queue
     /// See https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp/wiki/Getting-Started for more information
     /// </summary>
     /// <typeparam name="T">The values in the queue.  Must extend the StablePriorityQueueNode class</typeparam>
-    public sealed class StablePriorityQueue<T> : IFixedSizePriorityQueue<T, int>
+    public sealed class StablePriorityQueue<T> : IFixedSizePriorityQueue<T, long>
         where T : StablePriorityQueueNode
     {
         private int _numNodes;
@@ -118,7 +118,7 @@ namespace Priority_Queue
 #if NET_VERSION_4_5
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public void Enqueue(T node, int priority)
+        public void Enqueue(T node, long priority)
         {
 #if DEBUG
             if (node == null)
@@ -439,7 +439,7 @@ namespace Priority_Queue
 #if NET_VERSION_4_5
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public void UpdatePriority(T node, int priority)
+        public void UpdatePriority(T node, long priority)
         {
 #if DEBUG
             if (node == null)
@@ -465,14 +465,21 @@ namespace Priority_Queue
         /// Returns info about min max so we know if we hit a limit
         /// </summary>
         /// <param name="priority"></param>
-        public void AddAllPriorities(int priorityChange, out int min, out int max)
+        public void AddAllPriorities(long priorityChange, out long min, out long max)
         {
-            min = int.MaxValue;
-            max = int.MinValue;
-
-            for (int i = 1; i <= _numNodes; i++)
+            if(Count<1)
             {
-                int current = (_nodes[i].Priority += priorityChange);
+                // Somewhere I see popping out 4 billions number somewhere. I suspect is an empy queue
+                min = max = 0;
+                return;    
+            }
+
+            min = long.MaxValue;
+            max = long.MinValue;
+
+            for (int i = 1; i <= Count; i++)
+            {
+                long current = (_nodes[i].Priority += priorityChange);
                 if (current < min) min = current;
                 if (current > max) max = current;
             }

@@ -20,20 +20,37 @@ namespace GrannyAlgos.Corpus
 
         public OPUSTokenizer(OPUSDocument document, CultureInfo info)
         {
-            foreach(var dialogue in document.dialogues)
+            Initialize(document, info, new HashSet<string>());
+        }
+
+        public OPUSTokenizer(OPUSDocument document, CultureInfo info, HashSet<string> excludeWords)
+        {
+            Initialize(document, info, excludeWords);
+        }
+
+        public void Initialize(OPUSDocument document, CultureInfo info, HashSet<string> excludeWords)
+        {
+            foreach (var dialogue in document.dialogues)
             {
                 var dirtySentences = Normalizer.NGramClearUtils.SplitSentences(dialogue);
                 foreach (var sentence in dirtySentences)
                 {
                     var cleanSentence = Normalizer.NGramClearUtils.CleanForNgrams(sentence, info);
-                    sentences.Add(new Sentence { words = cleanSentence.Split(' ') });
+                    sentences
+                        .Add(
+                            new Sentence
+                            {
+                                words = cleanSentence.Split(' ')
+                                .Where(x => !string.IsNullOrWhiteSpace(x) && !excludeWords.Contains(x))
+                                .ToArray()
+                            });
                 }
             }
         }
 
         public IEnumerable<string> GetNGrams(int N)
         {
-            foreach(var sentence in sentences)
+            foreach(var sentence in sentences.Where( x => x.words.Length > 0))
             {
                 if (sentence.words.Length < N)
                     continue; // asked for 3 gram and 2 words? skip

@@ -34,10 +34,10 @@ namespace GrannyAlgos.Containers
         private StablePriorityQueue<Node<TVal>> queue;
         private long seenElements; // how many things we examined => used for % probability of insertion
         private int maxElements; // fixed size
-        private int minPriorityInQueue; // lowest priority found in the queue
-        private int maxPriorityInQueue; // highest priority found in the queue
-        private int nextPriorityCheckIn; // how many insertions before check priorities
-        private const int PriorityCheckInterval = 10000;
+        private long minPriorityInQueue; // lowest priority found in the queue
+        private long maxPriorityInQueue; // highest priority found in the queue
+        private long nextPriorityCheckIn; // how many insertions before check priorities
+        private const long PriorityCheckInterval = 10000;
         private long abosluteOffset;
 
         public int Count
@@ -61,6 +61,11 @@ namespace GrannyAlgos.Containers
             maxElements = capacity;
             Clear();
             rnd = new Random();
+        }
+
+        public long GetSeenElements()
+        {
+            return seenElements;
         }
 
         public void Add(TVal item)
@@ -87,27 +92,31 @@ namespace GrannyAlgos.Containers
             PriorityCheck(priority);
         }
 
-        private void PriorityCheck(int insertedPriority)
+        private void PriorityCheck(long insertedPriority)
         {
             //we value the relative priority of elements, not the absolute value
             nextPriorityCheckIn--;
             if (nextPriorityCheckIn <= 0)
             {
                 nextPriorityCheckIn = PriorityCheckInterval;
-                int min, max;
-                queue.AddAllPriorities(0, out min, out max);
 
-                // center max and min priorities around 0 value
-                // no guarantee the elmements will slowly grow a big difference anyway
-                int midpoint = (max - min) / 2;
-                abosluteOffset += midpoint; //used to keep track of absolute counter values
-                queue.AddAllPriorities( -midpoint, out min, out max);
-                maxPriorityInQueue = max;
-                minPriorityInQueue = min;
+                if (queue.Count > 0)
+                {
+                    long min, max;
+                    queue.AddAllPriorities(0, out min, out max);
+
+                    // center max and min priorities around 0 value
+                    // no guarantee the elmements will slowly grow a big difference anyway
+                    long midpoint = (max - min) / 2;
+                    abosluteOffset += midpoint; //used to keep track of absolute counter values
+                    queue.AddAllPriorities(-midpoint, out min, out max);
+                    maxPriorityInQueue = max;
+                    minPriorityInQueue = min;
+                }
             }
         }
 
-        private void AddAnyway(Node<TVal> item, int priority)
+        private void AddAnyway(Node<TVal> item, long priority)
         {
             queue.Enqueue(item, priority);
             dic.Add(item, item);
