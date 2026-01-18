@@ -159,6 +159,12 @@ namespace GrannyAlgos.Containers
             return false;
         }
 
+        public IEnumerable<KeyValuePair<TVal, long>> GetOccurences()
+        {
+            return dic.Select(x => new KeyValuePair<TVal, long>(x.Key.Value, x.Key.Priority + abosluteOffset))
+                .OrderByDescending(x => x.Value);
+        }
+
         public IEnumerator<TVal> GetEnumerator()
         {
             return dic.Keys.Select( x => x.Value).GetEnumerator();
