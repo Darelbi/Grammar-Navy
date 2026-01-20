@@ -6,7 +6,7 @@ The idea was: find the most **valuable** words.
 ### Ngram files
 
 Those are Ngrams extracted after cleaning the JSONs from OPUS (Open Subtitles)
-for spanish (ES-es). I also removed some words and the 100 most common words.
+for spanish (ES-es). 
 
  - 2-Grams-100000.csv
  - 3-Grams-100000.csv
@@ -26,10 +26,11 @@ Each file contains the top most frequent N-Grams sorted by frequency in the corp
  - Other words are also punctuation delimited
 
 ### Cleaning words
- 
+
+ - Most common words are linked too much to everything. I removed the top 100 ("el", "yo", ...)
  - Some words are excluded manually (i.e. "myspace", "www")
  - Some words are the most common 4000 english words (too much english content in OPUS)
- - Some englih words are not removed ( spanish people use "computer" word i.e.)
+ - Some english words are not removed ( spanish people use "computer" word i.e.)
  - Phonetic only words are removed "eh eh" "ah"
  - Some english abbreviations added manually to be removed ("i" "t" "m")
 
@@ -42,13 +43,13 @@ Each file contains the top most frequent N-Grams sorted by frequency in the corp
 ## Intent
 
 Get NGrams of semantically linked words after removing noise and some cleanup.
-Those NGrams in theory hide the statistics of cluster of words that are
+Those NGrams in theory hide the statistics of clusters of words that are
 convenient to learn, in order to help the:
 
 **Ability to create sentences in Spanish** 
 
 These NGrams still need to be processed, but it will be faster and easier
-that waiting my PC digesting the UPUS Spanish corpus 2 hours.
+than waiting my PC digesting the OPUS Spanish corpus 2 hours.
 
 ## Algorithm
 
@@ -67,5 +68,5 @@ on scores.
  - We can used multiple seeds (in example 1 food, 1 emotion and so on)
  - each seed will form a cluster
  - probably I need 1 big cluster plus some smaller clusters
- - If 2 clusters touch, maybe is a good idea to reseed from touchpoint.
+ - If 2 clusters touch, reseed from touchpoint?
  - I keep expanding until I reach desired number of words (i.e. 1000)
