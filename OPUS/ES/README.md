@@ -3,67 +3,69 @@
 For now I wanted to learn spanish in an effective way.
 The idea was: find the most **valuable** words.
 
-## Ngram files
+### Ngram files
 
 Those are Ngrams extracted after cleaning the JSONs from OPUS (Open Subtitles)
 for spanish (ES-es). I also removed some words and the 100 most common words.
 
- - 2-Grams-50000.csv
+ - 2-Grams-100000.csv
  - 3-Grams-100000.csv
+ - 4-Grams-100000.csv
 
-### Cleaning
+Each file contains the top most frequent N-Grams sorted by frequency in the corpus.
 
-I had to do some fix on wrong UTF8 conversions. There were other dirty characters
-but they were few. So any word that contains dirty characters is removed from a sentence
-I recognize this may alter Ngrams on very limited cases! But beware.
+## Cleaning
 
-Text is cleaned (code provided) by removing punctuation and non-unicode letters.
+### Cleaning characters
 
-Sentences are split over ":;.!?" characters. Reversed ?! are not counted and
-comma is not a delimiter.
+ - Special characters are all removed
+ - OPUS has bad UTF-8 encoding, I try to convert, if that fails I discard a word
+ - Some bad UTF-8 chars were probably punctuations (i.e: ... )
+ - If bad UTF8 are found I discard entire word from sentence
+ - The discarded word is only whitespace delimited (because bad punctuation can unite 2 words)
+ - Other words are also punctuation delimited
 
-N grams are computed within sentences. Because the goal is to make sentences.
-Not to make dialogues. The assumption is that better sentences allows better
-dialogues. I could be wrong of course!
+### Cleaning words
+ 
+ - Some words are excluded manually (i.e. "myspace", "www")
+ - Some words are the most common 4000 english words (too much english content in OPUS)
+ - Some englih words are not removed ( spanish people use "computer" word i.e.)
+ - Phonetic only words are removed "eh eh" "ah"
+ - Some english abbreviations added manually to be removed ("i" "t" "m")
 
-But seems there are no similiar open source projects. If you have requests open
-a ticket. It will probably be interesting for me anyway. Thanks
+### Sentence cleaning
 
-**Important**
+ - Sentences are delimited only by ;:.!? characters
+ - Comma and reversed !? are not delimiters
+ - Ngrams are extracted only from withing sentences (no boundaries cross)
 
-I Still have to clean english words and phonetic things lik "sigh" "ah ah"
-"he he"
+## Intent
 
-### Intent
+Get NGrams of semantically linked words after removing noise and some cleanup.
+Those NGrams in theory hide the statistics of cluster of words that are
+convenient to learn, in order to help the:
 
-Get semantically near words, excluded most common words.
-Ideally I can build from these a dictionary of words with which is
-possible to build many sentences.
+**Ability to create sentences in Spanish** 
 
-### Warning
+These NGrams still need to be processed, but it will be faster and easier
+that waiting my PC digesting the UPUS Spanish corpus 2 hours.
 
-High frequency does not necessarily mean high number of sentences
-so I should try to balance heurisitcs:
+## Algorithm
 
-- **Frequency of a word in Ngrams**
-- **Number of Ngrams that use that word**
-- Use a sort of random walk starting from seed/s
-- The seeds can come from different domains (emotions/food etc)
-- Some seeds must use LONG random walks
-- Feed up each cluster up to X given words
-- When dictionary reach desired size sort by heuristics.
+For now my idea is to use Ngrams as edges of a graph, the next 
+node to be traveled should be random using as factors:
 
-### Good use
+ - number of outgoing edges
+ - frequency of the word among all Ngrams
+ - frequency of that Ngram
 
-Ideally by running an algorithm on the two Ngram files I should be
-able to create a dictionary effective for learning Spanish faster.
+The travel will use a Random Walk. Most traversed words
+will get a greater score and after some time I have to cut
+on scores.
 
-Extract semantically near words.
-
-
-### Notes
-
-Depending on our purposes we could keep as few 3-Grams as 4500
-and 2-Grams as 30000. Or retain everthing. It's true that some
-Ngrams may be rare, but they could give indirect information on
-some of the words they contains.
+ - Starting word is a seed
+ - We can used multiple seeds (in example 1 food, 1 emotion and so on)
+ - each seed will form a cluster
+ - probably I need 1 big cluster plus some smaller clusters
+ - If 2 clusters touch, maybe is a good idea to reseed from touchpoint.
+ - I keep expanding until I reach desired number of words (i.e. 1000)
