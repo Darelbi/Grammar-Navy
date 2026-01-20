@@ -170,11 +170,17 @@ namespace GrannyConsoleApp
             forbiddenWods.Remove("email");
             forbiddenWods.Remove("chat");
             forbiddenWods.Remove("zoom");
-            forbiddenWods.Remove("a");
-            forbiddenWods.Remove("y");
+            //forbiddenWods.Remove("a");
+            //forbiddenWods.Remove("y"); // too common in spanish
             forbiddenWods.Remove("o");
             forbiddenWods.Remove("e");
             forbiddenWods.Remove("u");
+
+            // last words
+            forbiddenWods.Add("no");
+            forbiddenWods.Add("me");
+            forbiddenWods.Add("y");
+            forbiddenWods.Add("a");
 
             for (int i = 1; i < englishWordsToRemove.Length; i++)
             {
