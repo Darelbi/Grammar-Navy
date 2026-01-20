@@ -29,7 +29,7 @@ namespace GrannyAlgos.Containers
 
         public HashSet<string> GetTopNGrams(int n)
         {
-            var top = frequencies.AsEnumerable().OrderByDescending(x => x.Key).Select(x => x.Key);
+            var top = frequencies.AsEnumerable().OrderByDescending(x => x.Value).Select(x => x.Key);
             return new HashSet<string>(top.Take(n));
         }
     }

@@ -14,6 +14,11 @@ namespace GrannyAlgos.Corpus
         public string[] words;
     }
 
+    public class BoxedString
+    {
+        public string Line;
+    }
+
     public class OPUSTokenizer: ITokenizer
     {
         public List<Sentence> sentences = new List<Sentence>();
@@ -56,9 +61,22 @@ namespace GrannyAlgos.Corpus
                     continue; // asked for 3 gram and 2 words? skip
                 else
                 {
-                    for(int i=0; i< sentence.words.Length-N;i++)
+                    for (int i = 0; i < sentence.words.Length - N; i++)
                     {
-                        yield return string.Join(" ", sentence.words.Skip(i).Take(N));
+                        string ngram = string.Join(" ", sentence.words.Skip(i).Take(N));
+                        //if ((ngram.StartsWith("estamos aqu") 
+                        //            //&& ngram.Contains("pinturas")
+                        //            )
+                        //    || (ngram.Contains("do viejos t"))
+                        //    )
+                        //{
+                        //    var lines = new string[] { ("found:" + ngram + "   for:" + debugText.Line + "\n")};
+                        //    System.Console.WriteLine(".!.");
+                        //    System.IO.File.AppendAllLines(@"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es\findENCODINGERRORS.txt",
+
+                        //        lines);
+                        //}
+                        yield return ngram;
                     }
                 }
             }

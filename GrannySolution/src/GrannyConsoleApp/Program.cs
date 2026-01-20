@@ -5,26 +5,53 @@ using System.Globalization;
 using GrannyAlgos.Corpus;
 using Newtonsoft.Json;
 using GrannyAlgos.Containers;
+using GrannyAlgos.Normalizer;
 
 namespace GrannyConsoleApp
 {
     public class Program
     {
+        public static void CheckSpecialChars(OPUSDocument document, string json)
+        {
+            if (document.dialogues.Where(x => 
+                    x.Contains("�") ||
+                    x.Contains("�") || // special character not empty string
+                    x.Contains("�?�")
+                    || x.Contains("�") || x.Contains("�") 
+                    ).Any())
+            {
+
+                string corpusES = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es\findENCODINGERRORS.txt";
+
+                var jsonE = new string[] { json }.AsEnumerable();
+                var lines = document.dialogues.AsEnumerable();
+                var all = jsonE.Concat(lines);
+                var joined = string.Join(";", all);
+                File.AppendAllLines(corpusES, new string[] { joined });
+            }
+        }
+
         public static void Main(string[] args)
         {
             string readUno = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es_realidad_uno.txt";
             var forbidWords = new NGramList(File.ReadAllLines(readUno));
-            var forbiddenWods = forbidWords.GetTopNGrams(50);
+            var forbiddenWods = forbidWords.GetTopNGrams(100);
+            forbiddenWods.Add("www");
+            forbiddenWods.Add("subtitulos");
+            forbiddenWods.Add("tusubtitulo");
+            forbiddenWods.Add("myspace");
 
             string corpusES = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es\";
             var cinfo = new CultureInfo("es-ES");
 
             var allFiles = Directory.EnumerateFiles(corpusES, "*.jsonl", SearchOption.AllDirectories);
             
-            var dos = new RandSpaceSavingCounter<string>(20000);
-            var tres = new RandSpaceSavingCounter<string>(40000);
+            var dos = new RandSpaceSavingCounter<string>(50000);
+            var tres = new RandSpaceSavingCounter<string>(100000);
 
+            var start = System.DateTime.Now;
             int quanti = 1000;
+            long files = 0;
             foreach (var file in allFiles)
             {
                 if (quanti < 0)
@@ -32,35 +59,49 @@ namespace GrannyConsoleApp
                     quanti = 1000;
 
 
-                    Console.WriteLine("---\nSeen elements2: " + dos.GetSeenElements());
+                    Console.WriteLine("--- files:" +  files + "\nSeen elements2: " + dos.GetSeenElements());
                     Console.WriteLine("Seen elements3: " + tres.GetSeenElements());
                 }
 
                 quanti--;
-                var jsonText = File.ReadAllText(file);
-                try
+                
+                        files++;
+                if (true)
                 {
-                    var document = JsonConvert.DeserializeObject<OPUSDocument>(jsonText);
-                    var tokenizer = new OPUSTokenizer(document, cinfo, forbiddenWods);
+                    var jsonText = NGramClearUtils.FixSpuriousUTF8Encoding( File.ReadAllText(file));
+                    var jsonBox = new BoxedString { Line = jsonText };
+                    try
+                    {
+                        var document = JsonConvert.DeserializeObject<OPUSDocument>(jsonText);
+                        var tokenizer = new OPUSTokenizer(document, cinfo, forbiddenWods);
+                        //CheckSpecialChars(document, jsonText);
+                        foreach (var dgram in tokenizer.GetNGrams(2))
+                            dos.Add(dgram);
 
-                    foreach (var dgram in tokenizer.GetNGrams(2))
-                        dos.Add(dgram);
-
-                    foreach (var dgram in tokenizer.GetNGrams(3))
-                        tres.Add(dgram);
-                }
-                catch (System.Exception e)
-                {
-                    Console.WriteLine(e.Message);
+                        foreach (var dgram in tokenizer.GetNGrams(3))
+                            tres.Add(dgram);
+                    }
+                    catch (System.Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
                 }
             }
 
-            string writeDos = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es_advanced_dos.txt";
-            string writTres = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es_advanced_tres.txt";
-            
-            File.WriteAllLines(writeDos, dos.GetOccurences().Select(x => x.Value + ";" + x.Key));
-            File.WriteAllLines(writTres, tres.GetOccurences().Select(x => x.Value + ";" + x.Key));
-            Console.WriteLine("Finished Processing");
+            string writeDos = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es_advanced_dosB.txt";
+            string writTres = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es_advanced_tresB.txt";
+            //Console.ReadKey();
+            var linesdosraw = dos.GetNodes();
+            var offdos = dos.GetPriorityOffset();
+            var linesdos    = linesdosraw.OrderByDescending(x => x.Priority). Select(x => (x.Priority + offdos) + ";" + x.Value);
+
+            var linestresraw = tres.GetNodes();
+            var offtres = tres.GetPriorityOffset();
+            var linetres = linestresraw.OrderByDescending(x => x.Priority).Select(x => (x.Priority + offtres) + ";" + x.Value);
+
+            File.WriteAllLines(writeDos, linesdos, encoding: System.Text.Encoding.UTF8);
+            File.WriteAllLines(writTres, linetres, encoding: System.Text.Encoding.UTF8);
+            Console.WriteLine("Finished Processing in seconds: " + (System.DateTime.Now - start).TotalSeconds);
             Console.WriteLine("Seen elements: " + dos.GetSeenElements());
             Console.WriteLine("Seen elements: " + tres.GetSeenElements());
             Console.ReadKey();

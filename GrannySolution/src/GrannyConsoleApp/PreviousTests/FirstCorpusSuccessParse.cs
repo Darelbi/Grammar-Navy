@@ -40,14 +40,14 @@ namespace GrannyConsoleApp.PreviousTests
                     var document = JsonConvert.DeserializeObject<OPUSDocument>(jsonText);
                     var tokenizer = new OPUSTokenizer(document, cinfo);
 
-                    foreach (var dgram in tokenizer.GetNGrams(1))
-                        uno.Add(dgram);
+                    //foreach (var dgram in tokenizer.GetNGrams(1))
+                    //    uno.Add(dgram);
 
-                    foreach (var dgram in tokenizer.GetNGrams(2))
-                        dos.Add(dgram);
+                    //foreach (var dgram in tokenizer.GetNGrams(2))
+                    //    dos.Add(dgram);
 
-                    foreach (var dgram in tokenizer.GetNGrams(3))
-                        tres.Add(dgram);
+                    //foreach (var dgram in tokenizer.GetNGrams(3))
+                    //    tres.Add(dgram);
                 }
                 catch (System.Exception e)
                 {
@@ -61,9 +61,9 @@ namespace GrannyConsoleApp.PreviousTests
             string writeDos = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es_realidad_dos.txt";
             string writTres = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es_realidad_tres.txt";
 
-            File.WriteAllLines(writeUno, uno.GetOccurences().Select(x => x.Value + ";" + x.Key));
-            File.WriteAllLines(writeDos, dos.GetOccurences().Select(x => x.Value + ";" + x.Key));
-            File.WriteAllLines(writTres, tres.GetOccurences().Select(x => x.Value + ";" + x.Key));
+            //File.WriteAllLines(writeUno, uno.GetAsCsvLines().Select(x => x.Value + ";" + x.Key));
+            //File.WriteAllLines(writeDos, dos.GetAsCsvLines().Select(x => x.Value + ";" + x.Key));
+            //File.WriteAllLines(writTres, tres.GetAsCsvLines().Select(x => x.Value + ";" + x.Key));
             Console.WriteLine("Finished Processing");
             Console.WriteLine("Seen elements: " + uno.GetSeenElements());
             Console.WriteLine("Seen elements: " + dos.GetSeenElements());

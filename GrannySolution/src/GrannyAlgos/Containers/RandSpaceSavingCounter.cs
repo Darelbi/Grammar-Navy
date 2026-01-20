@@ -18,6 +18,12 @@ namespace GrannyAlgos.Containers
 
             public KVal Value {  get; private set;}
 
+            public string GetAsString()
+            {
+                string a = Value.ToString();
+                return a;
+            }
+
             public override int GetHashCode()
             {
                 return Value.GetHashCode();
@@ -78,7 +84,7 @@ namespace GrannyAlgos.Containers
             else
             {
                 if (Count < maxElements)
-                    AddAnyway(candidate, priority:0);
+                    AddAnyway(candidate, priority: minPriorityInQueue + 1);
                 else
                     AddRandomized(candidate);
             }
@@ -168,11 +174,26 @@ namespace GrannyAlgos.Containers
             return false;
         }
 
-        public IEnumerable<KeyValuePair<TVal, long>> GetOccurences()
+
+        public long GetPriorityOffset()
         {
-            return dic.Select(x => new KeyValuePair<TVal, long>(x.Key.Value, x.Key.Priority + abosluteOffset))
-                .OrderByDescending(x => x.Value);
+            return abosluteOffset;
         }
+        public IEnumerable<Node<TVal>> GetNodes()
+        {
+            return
+             dic.Keys.AsEnumerable();
+        }
+
+        //public IEnumerable<KeyValuePair<string, long>> GetAsCsvLines()
+        //{
+        //    return dic.Select(x => new KeyValuePair<string, long>(
+                
+        //        x.Key.GetAsString(), x.Key.Priority + abosluteOffset)
+                
+        //        )
+        //        .OrderByDescending(x => x.Value);
+        //}
 
         public IEnumerator<TVal> GetEnumerator()
         {
