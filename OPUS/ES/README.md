@@ -8,8 +8,8 @@ The idea was: find the most **valuable** words.
 Those are Ngrams extracted after cleaning the JSONs from OPUS (Open Subtitles)
 for spanish (ES-es). I also removed some words and the 100 most common words.
 
-2-Grams-50000.csv
-3-Grams-100000.csv
+ - 2-Grams-50000.csv
+ - 3-Grams-100000.csv
 
 ### Cleaning
 
