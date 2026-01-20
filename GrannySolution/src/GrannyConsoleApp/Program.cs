@@ -148,7 +148,7 @@ namespace GrannyConsoleApp
             forbiddenWods.Remove("bar");
             forbiddenWods.Remove("club");
             forbiddenWods.Remove("normal");
-            forbiddenWods.Remove("fatalv
+            forbiddenWods.Remove("fatalv");
             forbiddenWods.Remove("ideal");
             forbiddenWods.Remove("total");
             forbiddenWods.Remove("general");
