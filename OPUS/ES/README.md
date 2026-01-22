@@ -92,3 +92,14 @@ on scores.
  - probably I need 1 big cluster plus some smaller clusters
  - If 2 clusters touch, reseed from touchpoint?
  - I keep expanding until I reach desired number of words (i.e. 1000)
+ 
+### Unsolved problem
+
+The algorithm works well, and at a first glance, it seems the order
+of words makes sense.
+However the words are not necessarily linked. That's because starting
+from one seed expand the neighbour words, and neighbours are not 
+necessarily related.
+The Idea is to amend that and create chains so words are sorted
+by usability in a chain. The dictionary now is already probably better
+than a list of words sorted by frequency.
