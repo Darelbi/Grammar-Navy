@@ -63,7 +63,13 @@ namespace GrannyAlgos.Corpus
                 {
                     for (int i = 0; i < sentence.words.Length - N; i++)
                     {
-                        string ngram = string.Join(" ", sentence.words.Skip(i).Take(N));
+                        var ngrams = sentence.words.Skip(i).Take(N)  ;
+
+                        if (N > 1 && ngrams.All(x => x == ngrams.First()))
+                            continue; // No need to keep duplicate words for our use case
+
+                        string ngram = string.Join(" ", ngrams);
+
                         //if ((ngram.StartsWith("estamos aqu") 
                         //            //&& ngram.Contains("pinturas")
                         //            )
@@ -74,8 +80,8 @@ namespace GrannyAlgos.Corpus
                         //    System.Console.WriteLine(".!.");
                         //    System.IO.File.AppendAllLines(@"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\open_subtitles_es\findENCODINGERRORS.txt",
 
-                        //        lines);
-                        //}
+                            //        lines);
+                            //}
                         yield return ngram;
                     }
                 }

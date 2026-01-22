@@ -14,9 +14,12 @@ namespace GrannyAlgos.Containers
             public Node(KVal val)
             {
                     Value = val;
+                    RealInsertions = 1;
             }
 
             public KVal Value {  get; private set;}
+
+            public long RealInsertions { get;  set; }
 
             public string GetAsString()
             {
@@ -94,6 +97,7 @@ namespace GrannyAlgos.Containers
         {
             var existing = dic[item];
             var priority = existing.Priority + 1;
+            existing.RealInsertions++;
             queue.UpdatePriority(existing, priority);
             PriorityCheck(priority);
         }

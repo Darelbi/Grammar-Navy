@@ -12,7 +12,20 @@ for spanish (ES-es).
  - 3-Grams-100000.csv
  - 4-Grams-100000.csv
 
-Each file contains the top most frequent N-Grams sorted by frequency in the corpus.
+Each file contains the top 100.000 most frequent N-Grams sorted by frequency in the corpus.
+
+**CSV Format:**
+Count;Insertions;Ngram 
+
+- **Count** column: Estimated frequency
+- **Insertions** column: Counted frequency
+- **NGram** column: the ngram (UTF8)
+
+**Rationale**
+
+- Since the PC has limited RAM Ngrams are stored with a SpaceSaving priority queue
+- Ngrams that have very few insertions (1-2 or maybe 3) probably have a lower real count
+- If Count == Insertions => Then the Count is real for that NGram
 
 ## Cleaning
 
@@ -33,6 +46,8 @@ Each file contains the top most frequent N-Grams sorted by frequency in the corp
  - Some english words are not removed ( spanish people use "computer" word i.e.)
  - Phonetic only words are removed "eh eh" "ah"
  - Some english abbreviations added manually to be removed ("i" "t" "m")
+ - **Note:** Some Ngrams are specific to only 1 tv show... reduce them to 1?
+ - Duplicate words are not retained since we are building a dictionary, i.e "bien bien" > discarded
 
 ### Sentence cleaning
 
@@ -40,6 +55,13 @@ Each file contains the top most frequent N-Grams sorted by frequency in the corp
  - Comma and reversed !? are not delimiters
  - Ngrams are extracted only from withing sentences (no boundaries cross)
 
+## After Cleaning
+
+ - + **210 millions** words
+ - **104 millions** 2-Grams
+ - **64 millions** 3-Grams
+ - **40 millions** 4-Grams
+ 
 ## Intent
 
 Get NGrams of semantically linked words after removing noise and some cleanup.
