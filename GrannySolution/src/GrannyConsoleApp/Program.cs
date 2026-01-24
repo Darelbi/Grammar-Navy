@@ -54,17 +54,35 @@ namespace GrannyConsoleApp
             var n2grams = File.ReadAllLines(read2Grams);
             var n3grams = File.ReadAllLines(read3Grams);
             var n4grams = File.ReadAllLines(read4Grams);
+            var grams = n2grams.Concat(n3grams).Concat(n4grams).ToArray(); ;
 
-           
+
+            Console.WriteLine("---START---");
+
+            var builder = new WordGraphBuilder();
+            var graph = builder.GetGraph(grams);
+            builder.PageWalk(graph,0.85f,0.00001f,1000);
+
+            var test1 = graph.Values
+                .SelectMany(x => x)
+                .Where(z=>z.Ghost == false)
+                .OrderBy(y => y.CurrentScore)
+                .Select(x => x.Word).Take(1000);
 
             string path = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\";
-            var findWords = new ValuableWords(new string[] { word });
-            findWords.AddCsvLines(n2grams);
-            findWords.AddCsvLines(n3grams);
-            findWords.AddCsvLines(n4grams);
-            var result =
-            findWords.BuildValuableDictionary(35000, new int[] { 4 });
-            File.WriteAllLines(path+ word + ".vdic.csv", result);
+            File.WriteAllLines(path + "wordRank.vdic.csv", test1);
+
+            Console.WriteLine("---FINISH---");
+            Console.ReadKey();
+
+            //string path = @"C:\Users\Dario\Documents\GitHub\Grammar-Navy-Corpus\ES\ChatSubs\";
+            //var findWords = new ValuableWords(new string[] { word });
+            //findWords.AddCsvLines(n2grams);
+            //findWords.AddCsvLines(n3grams);
+            //findWords.AddCsvLines(n4grams);
+            //var result =
+            //findWords.BuildValuableDictionary(35000, new int[] { 4 });
+            //File.WriteAllLines(path+ word + ".vdic.csv", result);
         }
 
 

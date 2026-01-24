@@ -31,6 +31,7 @@ namespace GrannyAlgos.ValuableWords
             }
         }
 
+
         public string[] NoonWalk(Dictionary<string, ValuedNGram> wordsDic, int outIteration, int[] innerIterations)
         {
             Random rnd = new Random();

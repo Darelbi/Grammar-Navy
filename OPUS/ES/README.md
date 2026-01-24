@@ -103,3 +103,39 @@ necessarily related.
 The Idea is to amend that and create chains so words are sorted
 by usability in a chain. The dictionary now is already probably better
 than a list of words sorted by frequency.
+
+###
+
+Some words I expect to find once the algo work:
+
+todavía
+
+aunque
+
+casi
+
+apenas
+
+igual
+
+seguro
+
+quizá
+
+además
+
+siempre
+
+todavía
+
+mientras
+
+dentro
+
+fuera
+
+acabar
+
+dejar
+
+faltar
