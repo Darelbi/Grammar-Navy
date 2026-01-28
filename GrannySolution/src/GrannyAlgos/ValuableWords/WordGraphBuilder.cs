@@ -75,7 +75,7 @@ namespace GrannyAlgos.ValuableWords
         {
             double ammass = 0;
             foreach (var neigh in node.OutWeights.Values)
-                ammass += neigh.Insertions> 5 ? neigh.Count : 0;
+                ammass += neigh.Insertions > 5 ? Math.Log10( neigh.Count): 0;
 
             if (ammass < 10)
                 return;
@@ -84,7 +84,7 @@ namespace GrannyAlgos.ValuableWords
             {
                 var weights = keyvalue.Value;
                 var altName = keyvalue.Key;
-                var weight = weights.Insertions > 5 ? weights.Count : 0;
+                var weight = weights.Insertions > 5 ? Math.Log10(weights.Count) : 0;
 
                 var neight = node.Outgoings.Where(x => x.AltName == keyvalue.Key).First();
                 neight.TempScore += node.CurrentScore * (weight / ammass);

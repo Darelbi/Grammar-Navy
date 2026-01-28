@@ -77,19 +77,26 @@ namespace GrannyAlgos.Containers
             return seenElements;
         }
 
+        public int LastElementAdded { get; private set; }
+
         public void Add(TVal item)
         {
             seenElements++;
             var candidate = new Node<TVal>(item);
 
             if (dic.ContainsKey(candidate))
+            {
                 AddExisting(candidate);
+                LastElementAdded = 0;
+            }
             else
             {
                 if (Count < maxElements)
                     AddAnyway(candidate, priority: minPriorityInQueue + 1);
                 else
                     AddRandomized(candidate);
+
+                LastElementAdded = 1;
             }
         }
 

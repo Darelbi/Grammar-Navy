@@ -12,6 +12,14 @@ namespace GrannyAlgos.Corpus
     public class Sentence
     {
         public string[] words;
+
+        public float GetCoverage( HashSet<string> knownWords)
+        {
+            if (words.Length == 0)
+                return 0;
+
+            return words.Select(x => knownWords.Contains(x) ? 1 : 0).Sum() / (float)words.Length;
+        }
     }
 
     public class BoxedString
